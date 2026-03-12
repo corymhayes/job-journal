@@ -1,10 +1,10 @@
 import {
   Sidebar,
   SidebarContent,
-  // SidebarFooter,
+  SidebarFooter,
 } from "@/components/ui/sidebar";
 import { ApplicationForm } from "./application-form";
-// import { UserInfo } from "./user-info";
+import { UserInfo } from "./user-info";
 import type { Application } from "@/types/Application";
 
 interface SidebarLayoutProps {
@@ -25,9 +25,9 @@ export function SidebarLayout({
           onClearSelection={onClearSelection}
         />
       </SidebarContent>
-      {/*<SidebarFooter className="flex flex-row justify-between items-center p-2 mb-1">
+      <SidebarFooter className="flex flex-row justify-between items-center p-2 mb-1">
         <UserInfo />
-      </SidebarFooter>*/}
+      </SidebarFooter>
     </Sidebar>
   );
 }

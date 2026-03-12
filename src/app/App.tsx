@@ -5,6 +5,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { SidebarLayout } from "@/components/sidebar/layout";
 import { LoadingTable } from "@/components/table/loading";
 import type { Application } from "@/types/Application";
+import { ThemeProvider } from "@/components/theme-provider";
 
 function App() {
   const { data, status } = useQuery({
@@ -28,27 +29,29 @@ function App() {
   }, []);
 
   return (
-    <SidebarProvider
-      style={
-        {
-          "--sidebar-width": "20rem",
-          "--sidebar-width-mobile": "20rem",
-        } as CSSProperties
-      }
-      className="px-6"
-    >
-      {status === "pending" ? (
-        <LoadingTable loadingState="loading" />
-      ) : status === "error" ? (
-        <LoadingTable loadingState="error" />
-      ) : (
-        <TablePage applications={data} onEdit={handleEdit} />
-      )}
-      <SidebarLayout
-        selectedApplication={selectedApplication}
-        onClearSelection={handleClearSelection}
-      />
-    </SidebarProvider>
+    <ThemeProvider>
+      <SidebarProvider
+        style={
+          {
+            "--sidebar-width": "20rem",
+            "--sidebar-width-mobile": "20rem",
+          } as CSSProperties
+        }
+        className="px-6"
+      >
+        {status === "pending" ? (
+          <LoadingTable loadingState="loading" />
+        ) : status === "error" ? (
+          <LoadingTable loadingState="error" />
+        ) : (
+          <TablePage applications={data} onEdit={handleEdit} />
+        )}
+        <SidebarLayout
+          selectedApplication={selectedApplication}
+          onClearSelection={handleClearSelection}
+        />
+      </SidebarProvider>
+    </ThemeProvider>
   );
 }
 
