@@ -18,7 +18,7 @@ export function UserInfo() {
             </Avatar>
             <p className="flex flex-col text-xs">
               Cory Hayes
-              <span className="text-white/30">cory@app-tracker.com</span>
+              <span className="text-white/30">cory@app-tracker.gg</span>
             </p>
           </div>
         </DropdownMenuTrigger>
