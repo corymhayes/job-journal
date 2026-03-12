@@ -45,6 +45,7 @@ Whether you're applying to 5 companies or 50, this tool helps you:
 - **Neon** - Postgres database hosting
 
 ## Project Structure
+```
 src/
 ├── app/              # Main app component and initialization
 ├── components/
@@ -55,3 +56,17 @@ src/
 ├── types/            # TypeScript type definitions
 ├── api/              # Backend routes and handlers
 └── db/               # Database schema and migrations
+```
+
+##Learning & Development
+This project showcases:
+- **Modern React Patterns** – Hooks, context, and state management
+- **Type-Safe Development** – Comprehensive TypeScript usage from frontend to backend
+- **Form Handling** – Complex form validation and state management
+- **API Design** – RESTful API built with Hono
+- **Database Management** – Schema design and migrations with Drizzle ORM
+- **Responsive UI** – Tailwind CSS and accessible components
+- **Deployment** – Serverless architecture with Cloudflare Workers
+- 
+### License
+This project is open source and available under the MIT License.
