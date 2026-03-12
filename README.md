@@ -1,7 +1,7 @@
 # Application Tracker
 A full-stack job application management tool that helps you track, organize, and monitor your job applications through every stage of the hiring pipeline.
 
-**[Live Demo](#)** | **[Features](#features)** | **[Tech Stack](#tech-stack)** | **[Getting Started](#getting-started)**
+**[Live Demo](https://application-tracker.corymhayes-017.workers.dev/)** | **[Features](#features)** | **[Tech Stack](#tech-stack)** | **[Getting Started](#getting-started)**
 
 ![Application Tracker Screenshot](public/screenshot.png)
 
