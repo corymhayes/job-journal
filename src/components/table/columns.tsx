@@ -39,6 +39,7 @@ export const createColumns = (
         <a
           href={`${row.getValue("application_url")}`}
           className="hover:underline underline-offset-6"
+          target="_blank"
         >
           Link
         </a>
