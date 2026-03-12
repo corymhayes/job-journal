@@ -36,6 +36,11 @@ export function DeleteAlert({ onClose, rowId }: DeleteAlertProps) {
     },
   });
 
+  const handleCancel = () => {
+    setIsOpen(false);
+    onClose?.();
+  };
+
   const handleDelete = async () => {
     try {
       await toast
@@ -82,7 +87,7 @@ export function DeleteAlert({ onClose, rowId }: DeleteAlertProps) {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogCancel onClick={handleCancel}>Cancel</AlertDialogCancel>
           <AlertDialogAction variant="destructive" onClick={handleDelete}>
             Continue
           </AlertDialogAction>
