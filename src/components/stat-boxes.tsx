@@ -6,11 +6,13 @@ export function StatBoxes({
   stat,
   lastMonth,
   children,
+  percentage,
 }: {
   title: string;
   stat: number;
   lastMonth: number;
   children: React.ReactNode;
+  percentage?: boolean;
 }) {
   return (
     <Card className="h-32 w-full">
@@ -21,16 +23,20 @@ export function StatBoxes({
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col justify-between h-full">
-        <p className="text-xl font-semibold">{stat}</p>
+        {percentage ? (
+          <p className="text-xl font-semibold">{stat}%</p>
+        ) : (
+          <p className="text-xl font-semibold">{stat}</p>
+        )}
         {lastMonth > 0 ? (
           <p className="flex items-center gap-0.5">
-            <ArrowUpIcon className="text-green-400" />{" "}
+            <ArrowUpIcon className="text-green-400" />
             <span className="text-green-400">{lastMonth}%</span>
             vs last month
           </p>
         ) : (
           <p className="flex items-center gap-0.5">
-            <ArrowDownIcon className="text-red-400" />{" "}
+            <ArrowDownIcon className="text-red-400" />
             <span className="text-red-400">{lastMonth}%</span>
             vs last month
           </p>

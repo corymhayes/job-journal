@@ -1,4 +1,4 @@
-import { CSSProperties, useCallback, useEffect, useState } from "react";
+import { CSSProperties, useCallback, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { TablePage } from "@/components/table/table-page";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -85,7 +85,7 @@ function App() {
       }
     }
 
-    return Math.floor((daysPassed / totalDays) * 100) + "%";
+    return Math.floor((daysPassed / totalDays) * 100);
   };
 
   return (
@@ -131,6 +131,7 @@ function App() {
                 title="Response rate"
                 stat={findResponseRate()}
                 lastMonth={42}
+                percentage
               >
                 <EnvelopeSimpleOpenIcon size={16} />
               </StatBoxes>
