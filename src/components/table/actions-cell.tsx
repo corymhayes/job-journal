@@ -7,7 +7,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import type { Application } from "@/types/Application";
+// import type { Application } from "@/types/Application";
+import type { Application } from "@/applicationSchema";
 import { DeleteAlert } from "./delete-alert";
 import { PencilSimpleIcon, DotsThreeIcon } from "@phosphor-icons/react";
 

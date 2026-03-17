@@ -1,4 +1,3 @@
-import * as z from "zod";
 import {
   Field,
   FieldGroup,
@@ -6,39 +5,19 @@ import {
   FieldSet,
 } from "@/components/ui/field";
 import { useAppForm } from "@/hooks/form-context";
-
 import { Button } from "@/components/ui/button";
 import { FormFieldSelect } from "./form-field-select";
 import { FormFieldInput } from "./form-field-input";
 import { FormFieldDatePicker } from "./form-field-datepicker";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import type { Application } from "@/types/Application";
-import type { ApplicationPayload } from "@/types/ApplicationPayload";
-
-const statusOptions = [
-  "Applied",
-  "Recruiter Screen",
-  "Initial Interview",
-  "Technical Interview",
-  "Final Interview",
-  "Offer",
-  "Rejected",
-  "Withdrawn",
-] as const;
-const workStyleOptions = ["Remote", "Onsite", "Hybrid"] as const;
-
-const applicationSchema = z.object({
-  id: z.uuid().optional(),
-  company: z.string().max(100),
-  job: z.string().max(100),
-  status: z.enum(statusOptions),
-  work_style: z.enum(workStyleOptions),
-  application_url: z.url().optional(),
-  date_applied: z.date(),
-  date_response: z.date().optional(),
-});
-type FormValues = z.infer<typeof applicationSchema>;
+import { STATUS_OPTIONS, WORK_STYLE_OPTIONS } from "@/types/Options";
+import {
+  type Application,
+  type ApplicationFormValues,
+  type ApplicationPayload,
+  applicationFormSchema,
+} from "@/applicationSchema";
 
 interface ApplicationFormProps {
   application?: Application;
@@ -51,6 +30,7 @@ export function ApplicationForm({
 }: ApplicationFormProps) {
   const isEditing = !!application?.id;
   const queryClient = useQueryClient();
+
   const insertMutation = useMutation<Response, Error, ApplicationPayload>({
     mutationFn: async (newApp) => {
       return await fetch("/api", {
@@ -65,6 +45,7 @@ export function ApplicationForm({
 
   const updateMutation = useMutation<Response, Error, ApplicationPayload>({
     mutationFn: async (newApp) => {
+      console.log(newApp);
       return await fetch(`/api/${newApp.id}`, {
         method: "PUT",
         headers: {
@@ -75,7 +56,7 @@ export function ApplicationForm({
     },
   });
 
-  const defaultValues: FormValues = application
+  const defaultValues: ApplicationFormValues = application
     ? {
         id: application.id,
         company: application.company,
@@ -102,7 +83,7 @@ export function ApplicationForm({
 
   const form = useAppForm({
     defaultValues,
-    validators: { onSubmit: applicationSchema },
+    validators: { onSubmit: applicationFormSchema },
     onSubmit: async ({ value, formApi }) => {
       const payload = {
         id: value.id,
@@ -110,9 +91,11 @@ export function ApplicationForm({
         job: value.job,
         status: value.status,
         work_style: value.work_style,
-        application_url: value.application_url ?? "",
-        date_applied: value.date_applied,
-        date_response: value.date_response ?? null,
+        application_url: value.application_url || undefined,
+        date_applied: value.date_applied.toISOString().split("T")[0],
+        date_response: value.date_response
+          ? value.date_response.toISOString().split("T")[0]
+          : null,
       };
 
       try {
@@ -128,13 +111,12 @@ export function ApplicationForm({
           await toast
             .promise(insertMutation.mutateAsync(payload), {
               loading: "Saving application...",
-              success: "Application addded",
+              success: "Application added",
               error: "Unable to save",
             })
             .unwrap();
         }
 
-        // await queryClient.invalidateQueries({ queryKey: ["applications"] });
         await queryClient.refetchQueries();
         formApi.reset();
         onClearSelection?.();
@@ -159,7 +141,7 @@ export function ApplicationForm({
         <FieldGroup>
           <form.AppField name="status">
             {() => (
-              <FormFieldSelect label="Status" items={[...statusOptions]} />
+              <FormFieldSelect label="Status" items={[...STATUS_OPTIONS]} />
             )}
           </form.AppField>
 
@@ -175,7 +157,7 @@ export function ApplicationForm({
             {() => (
               <FormFieldSelect
                 label="Work Style"
-                items={[...workStyleOptions]}
+                items={[...WORK_STYLE_OPTIONS]}
               />
             )}
           </form.AppField>

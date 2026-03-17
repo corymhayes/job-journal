@@ -1,56 +1,58 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ApplicationPipelineValue } from "./application-pipeline-value";
+import { ApplicationPipelineGraph } from "./application-pipeline-graph";
 import type { Pipeline } from "@/types/Pipeline";
 
 export function ApplicationPipeline({ status }: { status: Pipeline[] }) {
+  console.log(status);
   return (
     <Card>
       <CardHeader>
         <CardTitle>Applications pipeline</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col">
-        <div className="w-full h-4 flex mt-2 mb-8">
-          <div
-            className="bg-yellow-400"
-            style={{ width: `${status[0].percentage}%` }}
-          ></div>
-          <div
-            className="bg-purple-400"
-            style={{ width: `${status[1].percentage}%` }}
-          ></div>
-          <div
-            className="bg-blue-400"
-            style={{ width: `${status[2].percentage}%` }}
-          ></div>
-          <div
-            className="bg-indigo-400"
-            style={{ width: `${status[3].percentage}%` }}
-          ></div>
-          <div
-            className="bg-green-400"
-            style={{ width: `${status[4].percentage}%` }}
-          ></div>
-          <div
-            className="bg-red-400"
-            style={{ width: `${status[5].percentage}%` }}
-          ></div>
-          <div
-            className="bg-pink-400"
-            style={{ width: `${status[6].percentage}%` }}
-          ></div>
+        <div className="w-full h-6 flex mt-2 mb-8">
+          <ApplicationPipelineGraph
+            color="bg-yellow-400"
+            width={status[0].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-purple-400"
+            width={status[1].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-pink-400"
+            width={status[2].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-blue-400"
+            width={status[3].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-indigo-400"
+            width={status[4].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-green-400"
+            width={status[5].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-red-400"
+            width={status[6].percentage}
+          />
+          <ApplicationPipelineGraph
+            color="bg-zinc-400"
+            width={status[7].percentage}
+          />
         </div>
-
         <div className="flex gap-5 w-full">
-          {status.map((stat) => (
-            <ApplicationPipelineValue title={stat.name} value={stat.value} />
+          {status.map((stat, i) => (
+            <ApplicationPipelineValue
+              title={stat.name}
+              value={stat.value}
+              key={i}
+            />
           ))}
-          {/*<ApplicationPipelineValue title= value={} />
-          <ApplicationPipelineValue title="Recruiter Screen" value={0} />
-          <ApplicationPipelineValue title="Technical Interview" value={1} />
-          <ApplicationPipelineValue title="Final Interview" value={0} />
-          <ApplicationPipelineValue title="Offer" value={0} />
-          <ApplicationPipelineValue title="Rejected" value={5} />
-          <ApplicationPipelineValue title="Withdrawn" value={0} />*/}
         </div>
       </CardContent>
     </Card>

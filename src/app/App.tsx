@@ -4,7 +4,7 @@ import { TablePage } from "@/components/table/table-page";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { SidebarLayout } from "@/components/sidebar/layout";
 import { LoadingTable } from "@/components/table/loading";
-import type { Application } from "@/types/Application";
+import type { Application } from "@/applicationSchema";
 import { ThemeProvider } from "@/components/theme-provider";
 import { StatBoxes } from "@/components/stats/stat-boxes";
 import {

@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { StatusBadge } from "@/components/table/status-badge";
 import { ActionsCell } from "./actions-cell";
 import { SortableHeader } from "./sortable-header";
-import type { Application } from "@/types/Application";
+import type { Application } from "@/applicationSchema";
 
 export const createColumns = (
   onEdit: (application: Application) => void,

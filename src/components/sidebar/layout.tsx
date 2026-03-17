@@ -5,7 +5,8 @@ import {
 } from "@/components/ui/sidebar";
 import { ApplicationForm } from "./application-form";
 import { UserInfo } from "./user-info";
-import type { Application } from "@/types/Application";
+// import type { Application } from "@/types/Application";
+import type { Application } from "@/applicationSchema";
 
 interface SidebarLayoutProps {
   selectedApplication?: Application;

@@ -1,8 +1,9 @@
-import type { Application } from "@/types/Application";
+// import type { Application } from "@/types/Application";
 import { useMemo } from "react";
 import { createColumns } from "./columns";
 import { DataTable } from "./data-table";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import type { Application } from "@/applicationSchema";
 
 interface TablePageProps {
   applications: Application[];

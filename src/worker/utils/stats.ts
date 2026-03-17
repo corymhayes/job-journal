@@ -1,5 +1,6 @@
-import type { Application } from "../../types/Application";
-import type { Pipeline } from "../../types/Pipeline";
+// import type { Application } from "../../types/Application";
+import type { Application } from "../../applicationSchema";
+import { STATUS_OPTIONS } from "../../types/Options";
 
 function calculatePercentageChange(curr: number, prev: number) {
   let calculation = 0;
@@ -114,16 +115,11 @@ export const findResponseRate = (
   currentApps: Application[],
   prevApps: Application[],
 ) => {
-  let currentResponses = 0;
-  let previousRespones = 0;
+  const currentResponses = currentApps.filter((d) => d.date_response).length;
+  const previousRespones = prevApps.filter((d) => d.date_response).length;
 
-  currentApps.map((d) => {
-    if (d.date_response) currentResponses += 1;
-  });
-
-  prevApps.map((d) => {
-    if (d.date_response) previousRespones += 1;
-  });
+  const currentRate =
+    currentApps.length > 0 ? (currentResponses / currentApps.length) * 100 : 0;
 
   const percentChange = calculatePercentageChange(
     currentResponses,
@@ -131,63 +127,26 @@ export const findResponseRate = (
   );
 
   return {
-    currentResponses: (currentResponses / currentApps.length) * 100,
+    currentResponses: Math.floor(currentRate),
     percentChange,
   };
 };
 
 export const pipelineValues = (data: Application[]) => {
-  let total = 0;
-  const statusObject: Pipeline[] = [
-    {
-      name: "Applied",
-      value: 0,
-      percentage: 0,
-    },
-    {
-      name: "Recruiter Screen",
-      value: 0,
-      percentage: 0,
-    },
-    {
-      name: "Technical Interview",
-      value: 0,
-      percentage: 0,
-    },
-    {
-      name: "Final Interview",
-      value: 0,
-      percentage: 0,
-    },
-    {
-      name: "Offer",
-      value: 0,
-      percentage: 0,
-    },
-    {
-      name: "Rejected",
-      value: 0,
-      percentage: 0,
-    },
-    {
-      name: "Withdrawn",
-      value: 0,
-      percentage: 0,
-    },
-  ];
+  const statusMap = new Map<string, number>();
 
-  data.map((d) => {
-    statusObject.map((s) => {
-      if (d.status === s.name) {
-        s.value += 1;
-        total += 1;
-      }
-    });
+  data.forEach((app) => {
+    if (app.status) {
+      statusMap.set(app.status, (statusMap.get(app.status) ?? 0) + 1);
+    }
   });
 
-  statusObject.map((s) => {
-    s.percentage = Math.ceil((s.value / total) * 100);
-  });
+  const total = data.length;
 
-  return statusObject;
+  return STATUS_OPTIONS.map((status) => ({
+    name: status,
+    value: statusMap.get(status) ?? 0,
+    percentage:
+      total > 0 ? Math.round(((statusMap.get(status) ?? 0) / total) * 100) : 0,
+  }));
 };
