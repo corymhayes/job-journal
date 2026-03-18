@@ -1,13 +1,12 @@
 import { Hono } from "hono";
 import { validator } from "hono/validator";
 import { db } from "./db";
+import * as z from "zod";
 import { type Application, applicationSchema } from "../applicationSchema";
 import { applicationTable } from "./db/schema";
 import { insertApplication } from "./db/queries/insert";
 import { deleteApplication } from "./db/queries/delete";
 import { updateApplication } from "./db/queries/update";
-import * as z from "zod";
-
 import {
   findApplicationsInMonth,
   findInProgress,
@@ -16,10 +15,16 @@ import {
   getPreviousMonth,
   pipelineValues,
 } from "./utils/stats";
+import { drizzle } from "drizzle-orm/neon-http";
+
+type Env = {
+  DATABASE_URL: string;
+};
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.get("/api", async (c) => {
+  const db = drizzle(c.env.DATABASE_URL);
   const results = await db.select().from(applicationTable);
   return c.json(results, { status: 200 });
 });
