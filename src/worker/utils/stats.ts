@@ -1,4 +1,3 @@
-// import type { Application } from "../../types/Application";
 import type { Application } from "../../applicationSchema";
 import { STATUS_OPTIONS } from "../../types/Options";
 
