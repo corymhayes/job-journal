@@ -78,7 +78,7 @@ app.put(
 
 app.delete("/api/:id", async (c) => {
   const id = c.req.param("id");
-  await deleteApplication(id);
+  await deleteApplication(c.env.DB_URL, id);
 
   return c.json("", { status: 200 });
 });
