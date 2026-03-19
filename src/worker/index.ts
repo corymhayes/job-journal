@@ -1,31 +1,32 @@
 import { Hono } from "hono";
 import { validator } from "hono/validator";
-import { db } from "./db";
+// import { db } from "./db";
 import * as z from "zod";
-import { type Application, applicationSchema } from "../applicationSchema";
-import { applicationTable } from "./db/schema";
+// import { type Application, applicationSchema } from "../applicationSchema";
+import { applicationSchema } from "../applicationSchema";
+// import { applicationTable } from "./db/schema";
 import { getAllApplications } from "./db/queries/select";
 import { insertApplication } from "./db/queries/insert";
 import { deleteApplication } from "./db/queries/delete";
 import { updateApplication } from "./db/queries/update";
-import {
-  findApplicationsInMonth,
-  findInProgress,
-  findResponseRate,
-  getCurrentMonth,
-  getPreviousMonth,
-  pipelineValues,
-} from "./utils/stats";
+// import {
+//   findApplicationsInMonth,
+//   findInProgress,
+//   findResponseRate,
+//   getCurrentMonth,
+//   getPreviousMonth,
+//   pipelineValues,
+// } from "./utils/stats";
 
 type Env = {
+  DB_URL: string;
   DATABASE_URL: string;
 };
 
 const app = new Hono<{ Bindings: Env }>();
 
 app.get("/api", async (c) => {
-  console.log(c.env);
-  const results = await getAllApplications(c.env.DATABASE_URL);
+  const results = await getAllApplications(c.env.DB_URL);
   return c.json(results, { status: 200 });
 });
 
@@ -41,7 +42,7 @@ app.post(
   }),
   async (c) => {
     const data = c.req.valid("json");
-    await insertApplication(data);
+    await insertApplication(c.env, data);
     return c.json("", { status: 200 });
   },
 );
@@ -69,7 +70,7 @@ app.put(
   async (c) => {
     const id = c.req.valid("param");
     const data = c.req.valid("json");
-    await updateApplication(id.id, data);
+    await updateApplication(c.env.DB_URL, id.id, data);
 
     return c.json("", { status: 200 });
   },
