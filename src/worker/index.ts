@@ -4,6 +4,7 @@ import { db } from "./db";
 import * as z from "zod";
 import { type Application, applicationSchema } from "../applicationSchema";
 import { applicationTable } from "./db/schema";
+import { getAllApplications } from "./db/queries/select";
 import { insertApplication } from "./db/queries/insert";
 import { deleteApplication } from "./db/queries/delete";
 import { updateApplication } from "./db/queries/update";
@@ -15,7 +16,6 @@ import {
   getPreviousMonth,
   pipelineValues,
 } from "./utils/stats";
-import { drizzle } from "drizzle-orm/neon-http";
 
 type Env = {
   DATABASE_URL: string;
@@ -24,8 +24,8 @@ type Env = {
 const app = new Hono<{ Bindings: Env }>();
 
 app.get("/api", async (c) => {
-  const db = drizzle(c.env.DATABASE_URL);
-  const results = await db.select().from(applicationTable);
+  console.log(c.env);
+  const results = await getAllApplications(c.env.DATABASE_URL);
   return c.json(results, { status: 200 });
 });
 
@@ -82,17 +82,17 @@ app.delete("/api/:id", async (c) => {
   return c.json("", { status: 200 });
 });
 
-app.get("/api/stats", async (c) => {
-  const results: Application[] = await db.select().from(applicationTable);
-  const currentMonth = getCurrentMonth(results);
-  const previousMonth = getPreviousMonth(results);
+// app.get("/api/stats", async (c) => {
+//   const results: Application[] = await db.select().from(applicationTable);
+//   const currentMonth = getCurrentMonth(results);
+//   const previousMonth = getPreviousMonth(results);
 
-  return c.json({
-    applications_in_month: findApplicationsInMonth(currentMonth, previousMonth),
-    in_progress: findInProgress(currentMonth, previousMonth),
-    response_rate: findResponseRate(currentMonth, previousMonth),
-    pipeline: pipelineValues(results),
-  });
-});
+//   return c.json({
+//     applications_in_month: findApplicationsInMonth(currentMonth, previousMonth),
+//     in_progress: findInProgress(currentMonth, previousMonth),
+//     response_rate: findResponseRate(currentMonth, previousMonth),
+//     pipeline: pipelineValues(results),
+//   });
+// });
 
 export default app;
