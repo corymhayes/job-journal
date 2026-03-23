@@ -63,16 +63,10 @@ function App() {
           <div className="flex flex-col w-full gap-5 mt-5">
             <div className="flex justify-evenly gap-5">
               <StatBoxes
-                title="Total applications"
-                stat={data.length}
-                lastMonth={30}
-              >
-                <FileTextIcon size={16} />
-              </StatBoxes>
-              <StatBoxes
                 title="Total this month"
                 stat={stats.applications_in_month.numberOfApps}
                 lastMonth={stats.applications_in_month.percentChange}
+                showChange
               >
                 <CalendarDotsIcon size={16} />
               </StatBoxes>
@@ -80,6 +74,7 @@ function App() {
                 title="In progress"
                 stat={stats.in_progress.inProgress}
                 lastMonth={stats.in_progress.percentChange}
+                showChange
               >
                 <SpinnerBallIcon size={16} />
               </StatBoxes>
@@ -88,8 +83,12 @@ function App() {
                 stat={Math.floor(stats.response_rate.currentResponses)}
                 lastMonth={stats.response_rate.percentChange}
                 percentage
+                showChange
               >
                 <EnvelopeSimpleOpenIcon size={16} />
+              </StatBoxes>
+              <StatBoxes title="Total applications" stat={data.length}>
+                <FileTextIcon size={16} />
               </StatBoxes>
             </div>
             <ApplicationPipeline status={stats.pipeline} />

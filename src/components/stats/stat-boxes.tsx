@@ -2,17 +2,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowUpIcon, ArrowDownIcon } from "@phosphor-icons/react";
 
 export function StatBoxes({
+  children,
   title,
   stat,
   lastMonth,
-  children,
   percentage,
+  showChange,
 }: {
+  children: React.ReactNode;
   title: string;
   stat: number;
-  lastMonth: number;
-  children: React.ReactNode;
+  lastMonth?: number;
   percentage?: boolean;
+  showChange?: boolean;
 }) {
   return (
     <Card className="h-32 w-full">
@@ -28,18 +30,28 @@ export function StatBoxes({
         ) : (
           <p className="text-xl font-semibold">{stat}</p>
         )}
-        {lastMonth > 0 ? (
-          <p className="flex items-center gap-0.5">
-            <ArrowUpIcon className="text-green-400" />
-            <span className="text-green-400">{lastMonth}%</span>
-            vs last month
-          </p>
+
+        {showChange ? (
+          lastMonth! > 0 ? (
+            <p className="flex items-center gap-0.5">
+              <ArrowUpIcon className="text-green-400" />
+              <span className="text-green-400">{lastMonth}%</span>
+              vs last month
+            </p>
+          ) : lastMonth! < 0 ? (
+            <p className="flex items-center gap-0.5">
+              <ArrowDownIcon className="text-red-400" />
+              <span className="text-red-400">{lastMonth}%</span>
+              vs last month
+            </p>
+          ) : (
+            <p className="flex items-center gap-0.5">
+              <span className="text-foreground/25">{lastMonth}%</span> vs last
+              month
+            </p>
+          )
         ) : (
-          <p className="flex items-center gap-0.5">
-            <ArrowDownIcon className="text-red-400" />
-            <span className="text-red-400">{lastMonth}%</span>
-            vs last month
-          </p>
+          <div>{lastMonth}</div>
         )}
       </CardContent>
     </Card>
