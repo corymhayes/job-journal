@@ -5,7 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { ModeToggle } from "../mode-toggle";
+import { ModeToggle } from "../theme-toggle";
 
 export function UserInfo() {
   return (
