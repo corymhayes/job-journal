@@ -6,11 +6,12 @@ import {
 import { ApplicationForm } from "./application-form";
 import { UserInfo } from "./user-info";
 import type { Application } from "@/applicationSchema";
+import type { User } from "@/types/User";
 
 interface SidebarLayoutProps {
   selectedApplication?: Application;
   onClearSelection?: () => void;
-  userData;
+  userData?: User;
 }
 
 export function SidebarLayout({
@@ -28,7 +29,7 @@ export function SidebarLayout({
         />
       </SidebarContent>
       <SidebarFooter className="flex flex-row justify-between items-center p-6">
-        <UserInfo userData={userData} />
+        {userData && <UserInfo userData={userData} />}
       </SidebarFooter>
     </Sidebar>
   );

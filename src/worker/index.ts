@@ -34,7 +34,7 @@ const authMiddleware = async (
 ) => {
   const authHeader = c.req.header("Authorization");
 
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!authHeader?.startsWith("Bearer ")) {
     return c.json({ error: "Unauthorized" }, 401);
   }
   const token = authHeader.split(" ")[1];
@@ -56,11 +56,17 @@ const authMiddleware = async (
 };
 
 app.get("/api", authMiddleware, async (c) => {
-  const userId = c.get("userId");
-  const data = await getAllApplications(
+  const user_id = c.get("userId");
+  const results = await getAllApplications(
     c.env.HYPERDRIVE.connectionString,
-    userId,
+    user_id,
   );
+
+  const data: Application[] = results.map((app) => ({
+    ...app,
+    user_id: app.user_id ?? undefined
+  }))
+
   return c.json(data);
 });
 
@@ -116,7 +122,7 @@ app.put(
   },
 );
 
-app.delete("/api/:id", async (c) => {
+app.delete("/api/:id", authMiddleware, async (c) => {
   const id = c.req.param("id");
   await deleteApplication(c.env.HYPERDRIVE.connectionString, id);
 
@@ -125,17 +131,23 @@ app.delete("/api/:id", async (c) => {
 
 app.get("/api/stats", authMiddleware, async (c) => {
   const user_id = c.get("userId");
-  const results: Application[] = await getAllApplications(
+  const results = await getAllApplications(
     c.env.HYPERDRIVE.connectionString,
     user_id,
   );
-  const currentMonth = getCurrentMonth(results);
-  const previousMonth = getPreviousMonth(results);
+
+  const data: Application[] = results.map((app) => ({
+    ...app,
+    user_id: app.user_id ?? undefined
+  }))
+
+  const currentMonth = getCurrentMonth(data);
+  const previousMonth = getPreviousMonth(data);
   return c.json({
     applications_in_month: findApplicationsInMonth(currentMonth, previousMonth),
     in_progress: findInProgress(currentMonth, previousMonth),
     response_rate: findResponseRate(currentMonth, previousMonth),
-    pipeline: pipelineValues(results),
+    pipeline: pipelineValues(data),
   });
 });
 

@@ -1,6 +1,6 @@
 import { GithubLogoIcon } from "@phosphor-icons/react";
 import { useNavigate } from "@tanstack/react-router";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, type ReactNode, useState } from "react";
 import { authClient } from "../../worker/auth";
 import { Button } from "../ui/button";
 import {
@@ -13,7 +13,10 @@ import {
 import { Field, FieldGroup, FieldLabel, FieldSeparator } from "../ui/field";
 import { Input } from "../ui/input";
 
-function Signup({ children }) {
+interface SignupProps {
+  children?: ReactNode;
+}
+function Signup({ children }: SignupProps) {
   const navigate = useNavigate();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
