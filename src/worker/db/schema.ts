@@ -12,8 +12,6 @@ import {
   uniqueIndex,
   varchar,
   date,
-  foreignKey,
-  primaryKey,
   unique,
 } from "drizzle-orm/pg-core";
 import { STATUS_OPTIONS, WORK_STYLE_OPTIONS } from "../../types/Options";

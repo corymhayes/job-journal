@@ -17,6 +17,10 @@ export const Route = createFileRoute("/")({
         to: "/app",
       });
     }
+
+    if (error) {
+      console.log(error);
+    }
   },
 });
 

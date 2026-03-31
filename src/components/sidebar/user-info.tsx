@@ -1,20 +1,22 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { authClient, client } from "@/worker/auth";
+} from "../ui/dropdown-menu";
+import { authClient } from "../../worker/auth";
 import { ModeToggle } from "../theme-toggle";
 import { useNavigate } from "@tanstack/react-router";
+import type { User } from "../../types/User";
+import type { FormEvent } from "react";
 
-export function UserInfo({ userData }) {
+export function UserInfo({ userData }: { userData: User }) {
   const navigate = useNavigate();
 
-  const handleSignout = async (e) => {
+  const handleSignout = async (e: FormEvent) => {
     e.preventDefault();
-    const { data, error } = await authClient.signOut();
+    const { error } = await authClient.signOut();
 
     if (!error) {
       navigate({
@@ -28,7 +30,7 @@ export function UserInfo({ userData }) {
       <DropdownMenuTrigger asChild>
         <div className="flex flex-row gap-2 items-center w-full">
           <Avatar>
-            <AvatarImage src={userData.image} />
+            <AvatarImage src={userData.image ?? undefined} />
             <AvatarFallback>{userData.name.substring(0, 1)}</AvatarFallback>
           </Avatar>
           <p className="flex flex-col text-xs">

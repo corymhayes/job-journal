@@ -1,4 +1,4 @@
-import type { Application } from "@/applicationSchema";
+import type { Application } from "../../applicationSchema";
 import { SidebarLayout } from "@/components/sidebar/layout";
 import { ApplicationPipeline } from "@/components/stats/application-pipeline";
 import { ApplicationPipelineLoading } from "@/components/stats/application-pipeline-loading";
@@ -20,6 +20,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { type CSSProperties, useCallback, useEffect, useState } from "react";
+import type { User } from "@/types/User";
 
 export const Route = createFileRoute("/app/")({
   component: App,
@@ -31,11 +32,15 @@ export const Route = createFileRoute("/app/")({
         to: "/",
       });
     }
+
+    if (error) {
+      console.log(error);
+    }
   },
 });
 
 function App() {
-  const [userData, setUserData] = useState();
+  const [userData, setUserData] = useState<User>();
 
   const { data, status } = useQuery({
     queryKey: ["applications"],
@@ -68,7 +73,7 @@ function App() {
 
   useEffect(() => {
     const getUser = async () => {
-      const { data, error } = await authClient.getSession();
+      const { data } = await authClient.getSession();
       setUserData(data?.user);
     };
 

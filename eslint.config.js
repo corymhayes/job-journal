@@ -23,7 +23,7 @@ export default tseslint.config(
         "warn",
         { allowConstantExport: true },
       ],
-      "@typescript-esling/no-explicit-any": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 );

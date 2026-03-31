@@ -1,8 +1,7 @@
-import { type FormEvent, useState } from "react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -12,13 +11,13 @@ import {
 } from "../ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
-import { authClient } from "@/worker/auth";
+import { authClient } from "../../worker/auth";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const handlePassword = async (e: FormEvent) => {
+  const handlePassword = async () => {
     const { error } = await authClient.requestPasswordReset({
       email,
       redirectTo: "http://localhost:5173/auth/reset-password",
@@ -47,10 +46,7 @@ export default function ForgotPassword() {
             reset your password will be sent.
           </DialogDescription>
         </DialogHeader>
-        <form
-          onSubmit={(e) => handlePassword(e)}
-          className="flex flex-col gap-5"
-        >
+        <form onSubmit={handlePassword} className="flex flex-col gap-5">
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>

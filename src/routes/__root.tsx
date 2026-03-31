@@ -1,12 +1,12 @@
 import {
+  createRootRouteWithContext,
   Link,
   Outlet,
-  createRootRouteWithContext,
 } from "@tanstack/react-router";
 
 import { NeonAuthUIProvider } from "@neondatabase/neon-js/auth/react";
 import type { QueryClient } from "@tanstack/react-query";
-import { authClient, client } from "../worker/auth";
+import { authClient } from "../worker/auth";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;

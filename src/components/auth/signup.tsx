@@ -33,6 +33,10 @@ function Signup({ children }) {
         to: "/app",
       });
     }
+
+    if (error) {
+      console.log(error);
+    }
   };
 
   const handleGitHubSignIn = async (e: FormEvent) => {
