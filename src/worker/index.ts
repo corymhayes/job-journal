@@ -6,14 +6,14 @@ import { getAllApplications } from "./db/queries/select";
 import { insertApplication } from "./db/queries/insert";
 import { deleteApplication } from "./db/queries/delete";
 import { updateApplication } from "./db/queries/update";
-import {
-  findApplicationsInMonth,
-  findInProgress,
-  findResponseRate,
-  getCurrentMonth,
-  getPreviousMonth,
-  pipelineValues,
-} from "./utils/stats";
+// import {
+//   findApplicationsInMonth,
+//   findInProgress,
+//   findResponseRate,
+//   getCurrentMonth,
+//   getPreviousMonth,
+//   pipelineValues,
+// } from "./utils/stats";
 import * as jose from "jose";
 
 type AppVariables = { userId: string };
@@ -55,10 +55,10 @@ const authMiddleware = async (
   }
 };
 
-app.get("/api", authMiddleware, async (c) => {
+app.get("/api", authMiddleware, async (c: Context) => {
   const user_id = c.get("userId");
   const results = await getAllApplications(
-    c.env.HYPERDRIVE.connectionString,
+    c,
     user_id,
   );
 
@@ -129,26 +129,26 @@ app.delete("/api/:id", authMiddleware, async (c) => {
   return c.json("", { status: 200 });
 });
 
-app.get("/api/stats", authMiddleware, async (c) => {
-  const user_id = c.get("userId");
-  const results = await getAllApplications(
-    c.env.HYPERDRIVE.connectionString,
-    user_id,
-  );
+// app.get("/api/stats", authMiddleware, async (c) => {
+//   const user_id = c.get("userId");
+//   const results = await getAllApplications(
+//     c.env.HYPERDRIVE.connectionString,
+//     user_id,
+//   );
 
-  const data: Application[] = results.map((app) => ({
-    ...app,
-    user_id: app.user_id ?? undefined
-  }))
+//   const data: Application[] = results.map((app) => ({
+//     ...app,
+//     user_id: app.user_id ?? undefined
+//   }))
 
-  const currentMonth = getCurrentMonth(data);
-  const previousMonth = getPreviousMonth(data);
-  return c.json({
-    applications_in_month: findApplicationsInMonth(currentMonth, previousMonth),
-    in_progress: findInProgress(currentMonth, previousMonth),
-    response_rate: findResponseRate(currentMonth, previousMonth),
-    pipeline: pipelineValues(data),
-  });
-});
+//   const currentMonth = getCurrentMonth(data);
+//   const previousMonth = getPreviousMonth(data);
+//   return c.json({
+//     applications_in_month: findApplicationsInMonth(currentMonth, previousMonth),
+//     in_progress: findInProgress(currentMonth, previousMonth),
+//     response_rate: findResponseRate(currentMonth, previousMonth),
+//     pipeline: pipelineValues(data),
+//   });
+// });
 
 export default app;
