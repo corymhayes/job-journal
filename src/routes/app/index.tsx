@@ -17,36 +17,33 @@ import {
   FileTextIcon,
   SpinnerBallIcon,
 } from "@phosphor-icons/react";
-import { useQuery } from "@tanstack/react-query";
+import { QueryErrorResetBoundary, useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { type CSSProperties, useCallback, useEffect, useState } from "react";
 import type { User } from "@/types/User";
+import { DashboardErrorBoundary } from "@/components/dashboard-error-boundary";
+import { ErrorBoundary } from "@/components/error-boundary";
 
 export const Route = createFileRoute("/app/")({
   component: App,
   beforeLoad: async () => {
-    const { data, error } = await authClient.getSession();
+    const { data } = await authClient.getSession();
 
     if (!data?.session) {
       throw redirect({
         to: "/",
       });
     }
-
-    if (error) {
-      console.log(error);
-    }
   },
 });
 
-function App() {
+function AppContent() {
   const [userData, setUserData] = useState<User>();
 
   const { data, status } = useQuery({
     queryKey: ["applications"],
     queryFn: async () => {
-      // const res = await fetch("/api");
-      const data = await api.request("/api");
+      const { data } = await api.request("/api");
       return data;
     },
   });
@@ -54,8 +51,8 @@ function App() {
   const { data: stats, status: statsStatus } = useQuery({
     queryKey: ["stats"],
     queryFn: async () => {
-      // const res = await fetch("/api/stats");
-      return await api.request("/api/stats");
+      const { stats } = await api.request("/api/stats");
+      return stats;
     },
   });
 
@@ -81,82 +78,94 @@ function App() {
   }, []);
 
   return (
-    <SignedIn>
-      <ThemeProvider>
-        <SidebarProvider
-          style={
-            {
-              "--sidebar-width": "20rem",
-              "--sidebar-width-mobile": "20rem",
-            } as CSSProperties
-          }
-          className="px-6"
-        >
-          {status === "pending" || statsStatus === "pending" ? (
-            <div className="flex flex-col w-full gap-5 mt-5">
-              <div className="flex justify-evenly gap-5">
-                <LoadingStats title="Total this month">
-                  <CalendarDotsIcon size={16} />
-                </LoadingStats>
-                <LoadingStats title="In progress">
-                  <SpinnerBallIcon size={16} />
-                </LoadingStats>
-                <LoadingStats title="Response rate">
-                  <EnvelopeSimpleOpenIcon size={16} />
-                </LoadingStats>
-                <LoadingStats title="Total applications">
-                  <FileTextIcon size={16} />
-                </LoadingStats>
+    <DashboardErrorBoundary>
+      <SignedIn>
+        <ThemeProvider>
+          <SidebarProvider
+            style={
+              {
+                "--sidebar-width": "20rem",
+                "--sidebar-width-mobile": "20rem",
+              } as CSSProperties
+            }
+            className="px-6"
+          >
+            {status === "pending" || statsStatus === "pending" ? (
+              <div className="flex flex-col w-full gap-5 mt-5">
+                <div className="flex justify-evenly gap-5">
+                  <LoadingStats title="Total this month">
+                    <CalendarDotsIcon size={16} />
+                  </LoadingStats>
+                  <LoadingStats title="In progress">
+                    <SpinnerBallIcon size={16} />
+                  </LoadingStats>
+                  <LoadingStats title="Response rate">
+                    <EnvelopeSimpleOpenIcon size={16} />
+                  </LoadingStats>
+                  <LoadingStats title="Total applications">
+                    <FileTextIcon size={16} />
+                  </LoadingStats>
+                </div>
+                <ApplicationPipelineLoading />
+                <LoadingTable loadingState="loading" />
               </div>
-              <ApplicationPipelineLoading />
-              <LoadingTable loadingState="loading" />
-            </div>
-          ) : status === "error" || statsStatus === "error" ? (
-            <LoadingTable loadingState="error" />
-          ) : (
-            <div className="flex flex-col w-full gap-5 mt-5">
-              <div className="flex justify-evenly gap-5">
-                <StatBoxes
-                  title="Total this month"
-                  stat={stats.applications_in_month.numberOfApps}
-                  lastMonth={stats.applications_in_month.percentChange}
-                  showChange
-                >
-                  <CalendarDotsIcon size={16} weight="fill" />
-                </StatBoxes>
-                <StatBoxes
-                  title="In progress"
-                  stat={stats.in_progress.inProgress}
-                  lastMonth={stats.in_progress.percentChange}
-                  showChange
-                >
-                  <SpinnerBallIcon size={16} weight="fill" />
-                </StatBoxes>
-                <StatBoxes
-                  title="Response rate"
-                  stat={Math.floor(stats.response_rate.currentResponses)}
-                  lastMonth={stats.response_rate.percentChange}
-                  percentage
-                  showChange
-                >
-                  <EnvelopeSimpleOpenIcon size={16} weight="fill" />
-                </StatBoxes>
-                <StatBoxes title="Total applications" stat={data.length}>
-                  <FileTextIcon size={16} weight="fill" />
-                </StatBoxes>
+            ) : status === "error" || statsStatus === "error" ? (
+              <LoadingTable loadingState="error" />
+            ) : (
+              <div className="flex flex-col w-full gap-5 mt-5">
+                <div className="flex justify-evenly gap-5">
+                  <StatBoxes
+                    title="Total this month"
+                    stat={stats.applications_in_month.numberOfApps}
+                    lastMonth={stats.applications_in_month.percentageChange}
+                    showChange
+                  >
+                    <CalendarDotsIcon size={16} weight="fill" />
+                  </StatBoxes>
+                  <StatBoxes
+                    title="In progress"
+                    stat={stats.in_progress.inProgress}
+                    lastMonth={stats.in_progress.percentageChange}
+                    showChange
+                  >
+                    <SpinnerBallIcon size={16} weight="fill" />
+                  </StatBoxes>
+                  <StatBoxes
+                    title="Response rate"
+                    stat={Math.floor(stats.response_rate.currentResponses)}
+                    lastMonth={stats.response_rate.percentageChange}
+                    percentage
+                    showChange
+                  >
+                    <EnvelopeSimpleOpenIcon size={16} weight="fill" />
+                  </StatBoxes>
+                  <StatBoxes title="Total applications" stat={data.length}>
+                    <FileTextIcon size={16} weight="fill" />
+                  </StatBoxes>
+                </div>
+                <ApplicationPipeline status={stats.pipeline} />
+                <TablePage applications={data} onEdit={handleEdit} />
               </div>
-              <ApplicationPipeline status={stats.pipeline} />
-              <TablePage applications={data} onEdit={handleEdit} />
-            </div>
-          )}
-          <SidebarLayout
-            selectedApplication={selectedApplication}
-            onClearSelection={handleClearSelection}
-            userData={userData}
-          />
-        </SidebarProvider>
-      </ThemeProvider>
-    </SignedIn>
+            )}
+            <SidebarLayout
+              selectedApplication={selectedApplication}
+              onClearSelection={handleClearSelection}
+              userData={userData}
+            />
+          </SidebarProvider>
+        </ThemeProvider>
+      </SignedIn>
+    </DashboardErrorBoundary>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <QueryErrorResetBoundary>
+        {({ reset }) => <AppContent />}
+      </QueryErrorResetBoundary>
+    </ErrorBoundary>
   );
 }
 

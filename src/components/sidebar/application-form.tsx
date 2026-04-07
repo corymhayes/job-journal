@@ -19,6 +19,8 @@ import {
   applicationFormSchema,
 } from "@/applicationSchema";
 import { api } from "@/lib/api";
+import { formatISODate } from "@/lib/formatISODate";
+import { invalidateApplicationQueries } from "../../lib/query-factory";
 
 interface ApplicationFormProps {
   application?: Application;
@@ -80,14 +82,14 @@ export function ApplicationForm({
     defaultValues,
     validators: { onSubmit: applicationFormSchema },
     onSubmit: async ({ value, formApi }) => {
-      const payload = {
+      const payload: ApplicationPayload = {
         id: value.id,
         company: value.company,
         job: value.job,
         status: value.status,
         work_style: value.work_style,
         application_url: value.application_url || undefined,
-        date_applied: value.date_applied.toISOString().split("T")[0],
+        date_applied: formatISODate(value.date_applied),
         date_response: value.date_response
           ? value.date_response.toISOString().split("T")[0]
           : null,
@@ -113,7 +115,8 @@ export function ApplicationForm({
             .unwrap();
         }
 
-        await queryClient.refetchQueries();
+        await invalidateApplicationQueries(queryClient);
+
         formApi.reset();
         onClearSelection?.();
       } catch {

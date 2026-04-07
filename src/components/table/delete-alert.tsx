@@ -15,6 +15,8 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { TrashSimpleIcon } from "@phosphor-icons/react";
+import { api } from "../../lib/api";
+import { invalidateApplicationQueries } from "@/lib/query-factory";
 
 interface DeleteAlertProps {
   onClose?: () => void;
@@ -26,12 +28,8 @@ export function DeleteAlert({ onClose, rowId }: DeleteAlertProps) {
   const queryClient = useQueryClient();
   const mutation = useMutation<Response, Error, string>({
     mutationFn: async (id) => {
-      return await fetch(`/api/${id}`, {
+      return await api.request(`/api/${id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(id),
       });
     },
   });
@@ -49,19 +47,17 @@ export function DeleteAlert({ onClose, rowId }: DeleteAlertProps) {
           {
             loading: "Deleting...",
             success: "Application deleted",
-            error: "Error",
-          },
+            error: "Unable to delete application",
+          }
         )
         .unwrap();
 
-      await queryClient.invalidateQueries({
-        queryKey: ["applications"],
-      });
+      await invalidateApplicationQueries(queryClient);
 
       setIsOpen(false);
       onClose?.();
-    } catch (err) {
-      console.log(err);
+    } catch {
+      toast.error("Unabled to delete application");
     }
   };
 

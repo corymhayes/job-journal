@@ -1,7 +1,8 @@
-// import { createDB } from "..";
-// import { type InsertApplication, applicationTable } from "../schema";
+import type { Context } from "hono";
+import { createDB } from "..";
+import { type InsertApplication, applicationTable } from "../schema";
 
-// export async function insertApplication(env: string, data: InsertApplication) {
-//   const db = createDB(env);
-//   await db.insert(applicationTable).values(data);
-// }
+export async function insertApplication(c: Context, data: InsertApplication) {
+  const db = await createDB(c);
+  await db.insert(applicationTable).values(data);
+}

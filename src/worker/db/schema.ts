@@ -59,7 +59,7 @@ export const accountInNeonAuth = neonAuth.table(
   },
   (table) => [
     index("account_userId_idx").using("btree", table.userId.asc().nullsLast()),
-  ],
+  ]
 );
 
 export const invitationInNeonAuth = neonAuth.table(
@@ -84,9 +84,9 @@ export const invitationInNeonAuth = neonAuth.table(
     index("invitation_email_idx").using("btree", table.email.asc().nullsLast()),
     index("invitation_organizationId_idx").using(
       "btree",
-      table.organizationId.asc().nullsLast(),
+      table.organizationId.asc().nullsLast()
     ),
-  ],
+  ]
 );
 
 export const jwksInNeonAuth = neonAuth.table("jwks", {
@@ -113,10 +113,10 @@ export const memberInNeonAuth = neonAuth.table(
   (table) => [
     index("member_organizationId_idx").using(
       "btree",
-      table.organizationId.asc().nullsLast(),
+      table.organizationId.asc().nullsLast()
     ),
     index("member_userId_idx").using("btree", table.userId.asc().nullsLast()),
-  ],
+  ]
 );
 
 export const organizationInNeonAuth = neonAuth.table(
@@ -132,10 +132,10 @@ export const organizationInNeonAuth = neonAuth.table(
   (table) => [
     uniqueIndex("organization_slug_uidx").using(
       "btree",
-      table.slug.asc().nullsLast(),
+      table.slug.asc().nullsLast()
     ),
     unique("organization_slug_key").on(table.slug),
-  ],
+  ]
 );
 
 export const projectConfigInNeonAuth = neonAuth.table(
@@ -158,7 +158,7 @@ export const projectConfigInNeonAuth = neonAuth.table(
     pluginConfigs: jsonb("plugin_configs"),
     webhookConfig: jsonb("webhook_config"),
   },
-  (table) => [unique("project_config_endpoint_id_key").on(table.endpointId)],
+  (table) => [unique("project_config_endpoint_id_key").on(table.endpointId)]
 );
 
 export const sessionInNeonAuth = neonAuth.table(
@@ -182,7 +182,7 @@ export const sessionInNeonAuth = neonAuth.table(
   (table) => [
     index("session_userId_idx").using("btree", table.userId.asc().nullsLast()),
     unique("session_token_key").on(table.token),
-  ],
+  ]
 );
 
 export const userInNeonAuth = neonAuth.table(
@@ -204,7 +204,7 @@ export const userInNeonAuth = neonAuth.table(
     banReason: text(),
     banExpires: timestamp({ withTimezone: true }),
   },
-  (table) => [unique("user_email_key").on(table.email)],
+  (table) => [unique("user_email_key").on(table.email)]
 );
 
 export const verificationInNeonAuth = neonAuth.table(
@@ -224,9 +224,9 @@ export const verificationInNeonAuth = neonAuth.table(
   (table) => [
     index("verification_identifier_idx").using(
       "btree",
-      table.identifier.asc().nullsLast(),
+      table.identifier.asc().nullsLast()
     ),
-  ],
+  ]
 );
 
 export type InsertApplication = typeof applicationTable.$inferInsert;

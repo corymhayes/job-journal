@@ -19,7 +19,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    "noImplicitAny": false,
+    "noImplicitAny": false
   },
-  "include": ["vite.config.ts"],
+  "include": ["vite.config.ts"]
 }

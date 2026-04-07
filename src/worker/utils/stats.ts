@@ -1,151 +1,133 @@
 import type { Application } from "../../applicationSchema";
 import { STATUS_OPTIONS } from "../../types/Options";
+import type { Pipeline } from "../../types/Pipeline";
 
+// Define in-progress statuses as a constant (also fixes the hardcoded enum issue)
+const IN_PROGRESS_STATUSES = [
+  "Recruiter Screen",
+  "Initial Interview",
+  "Technical Interview",
+  "Final Interview",
+] as const;
+type InProgressStatuses = (typeof IN_PROGRESS_STATUSES)[number];
+
+/**
+ * Calculate percentage change between two values
+ * @param curr Current value
+ * @param prev Previous value
+ * @returns Percentage change rounded up
+ */
 function calculatePercentageChange(curr: number, prev: number) {
-  let calculation = 0;
-
   if (prev === 0) {
-    calculation = Math.ceil((curr - prev) * 100);
-  } else {
-    calculation = Math.ceil(((curr - prev) / prev) * 100);
+    return curr > 0 ? 100 : 0;
   }
 
-  return calculation;
+  return Math.ceil(((curr - prev) / prev) * 100);
 }
 
-export function getCurrentMonth(data: Application[]) {
-  const foundMonths: Application[] = [];
+/**
+ * Filter applications by a specific year and month
+ * @param data Array of applications
+ * @param year Target year
+ * @param month Target month (0-indexed)
+ * @returns Filtered applications
+ */
+export function getMonthlyApplications(data: Application[]) {
   const now = new Date();
-  const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
 
-  for (const d of data) {
-    const dateSnapshot = new Date(d.date_applied);
-    const monthSnapshot = dateSnapshot.getMonth();
-    const yearSnapshot = dateSnapshot.getFullYear();
+  const prevMonthDate = new Date(currentYear, currentMonth - 1, 1);
+  const prevMonth = prevMonthDate.getMonth();
+  const prevYear = prevMonthDate.getFullYear();
 
-    if (monthSnapshot === currentMonth && yearSnapshot === currentYear) {
-      foundMonths.push(d);
+  const currentMonthApps: Application[] = [];
+  const previousMonthApps: Application[] = [];
+
+  for (const app of data) {
+    const date = new Date(app.date_applied);
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    if (year === currentYear && month === currentMonth) {
+      currentMonthApps.push(app);
+    } else if (year === prevYear && month === prevMonth) {
+      previousMonthApps.push(app);
     }
   }
 
-  return foundMonths;
+  return { currentMonthApps, previousMonthApps };
 }
 
-export function getPreviousMonth(data: Application[]) {
-  const foundMonths: Application[] = [];
-  const now = new Date();
-  const prev = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-  const prevMonth = prev.getMonth();
-  const prevYear = prev.getFullYear();
+export function calculateAllStats(data: Application[]) {
+  const { currentMonthApps, previousMonthApps } = getMonthlyApplications(data);
 
-  for (const d of data) {
-    const dateSnapshot = new Date(d.date_applied);
-    const monthSnapshot = dateSnapshot.getMonth();
-    const yearSnapshot = dateSnapshot.getFullYear();
-
-    if (monthSnapshot === prevMonth && yearSnapshot === prevYear) {
-      foundMonths.push(d);
-    }
-  }
-
-  return foundMonths;
-}
-
-export const findApplicationsInMonth = (
-  currentApps: Application[],
-  prevApps: Application[],
-) => {
-  const numberOfApps = currentApps.length;
-  const percentChange = calculatePercentageChange(
-    currentApps.length,
-    prevApps.length,
-  );
-
-  return {
-    numberOfApps,
-    percentChange,
-  };
-};
-
-export const findInProgress = (
-  currentApps: Application[],
-  prevApps: Application[],
-) => {
   let currentInProgress = 0;
+  let currentResponses = 0;
   let prevInProgress = 0;
-  const currentStatus = currentApps.map((d) => d.status);
-  const prevStatus = prevApps.map((p) => p.status);
+  let prevResponses = 0;
 
-  for (const curr of currentStatus) {
-    if (
-      curr === "Recruiter Screen" ||
-      curr === "Initial Interview" ||
-      curr === "Technical Interview" ||
-      curr === "Final Interview"
-    ) {
+  const statusCounts = new Map<string, number>();
+
+  for (const app of data) {
+    const status = app.status as string;
+    statusCounts.set(status, (statusCounts.get(status) ?? 0) + 1);
+  }
+
+  for (const app of currentMonthApps) {
+    if (IN_PROGRESS_STATUSES.includes(app.status as InProgressStatuses)) {
       currentInProgress += 1;
     }
+
+    if (app.date_response) {
+      currentResponses += 1;
+    }
   }
 
-  for (const prev of prevStatus) {
-    if (
-      prev === "Recruiter Screen" ||
-      prev === "Initial Interview" ||
-      prev === "Technical Interview" ||
-      prev === "Final Interview"
-    ) {
+  for (const app of previousMonthApps) {
+    if (IN_PROGRESS_STATUSES.includes(app.status as InProgressStatuses)) {
       prevInProgress += 1;
     }
+
+    if (app.date_response) {
+      prevResponses += 1;
+    }
   }
 
-  const percentChange = calculatePercentageChange(
-    currentInProgress,
-    prevInProgress,
-  );
-
-  return {
-    inProgress: currentInProgress,
-    percentChange,
-  };
-};
-
-export const findResponseRate = (
-  currentApps: Application[],
-  prevApps: Application[],
-) => {
-  const currentResponses = currentApps.filter((d) => d.date_response).length;
-  const previousRespones = prevApps.filter((d) => d.date_response).length;
-
   const currentRate =
-    currentApps.length > 0 ? (currentResponses / currentApps.length) * 100 : 0;
+    currentMonthApps.length > 0
+      ? (currentResponses / currentMonthApps.length) * 100
+      : 0;
+  // const prevRate = previousMonthApps.length > 0 ? (prevResponses / previousMonthApps.length) * 100 : 0;
 
-  const percentChange = calculatePercentageChange(
-    currentResponses,
-    previousRespones,
-  );
+  const pipeline: Pipeline[] = STATUS_OPTIONS.map((status) => ({
+    name: status,
+    value: statusCounts.get(status) ?? 0,
+    percentage:
+      data.length > 0
+        ? Math.round(((statusCounts.get(status) ?? 0) / data.length) * 100)
+        : 0,
+  }));
 
   return {
-    currentResponses: Math.floor(currentRate),
-    percentChange,
+    applications_in_month: {
+      numberOfApps: currentMonthApps.length,
+      percentageChange: calculatePercentageChange(
+        currentMonthApps.length,
+        previousMonthApps.length
+      ),
+    },
+    in_progress: {
+      inProgress: currentInProgress,
+      percentageChange: calculatePercentageChange(
+        currentInProgress,
+        prevInProgress
+      ),
+    },
+    response_rate: {
+      currentResponses: Math.floor(currentRate),
+      percentageChange: calculatePercentageChange(currentResponses, prevResponses),
+    },
+    pipeline,
   };
-};
-
-export const pipelineValues = (data: Application[]) => {
-  const statusMap = new Map<string, number>();
-
-  data.forEach((app) => {
-    if (app.status) {
-      statusMap.set(app.status, (statusMap.get(app.status) ?? 0) + 1);
-    }
-  });
-
-  const total = data.length;
-
-  return STATUS_OPTIONS.map((status) => ({
-    name: status,
-    value: statusMap.get(status) ?? 0,
-    percentage:
-      total > 0 ? Math.round(((statusMap.get(status) ?? 0) / total) * 100) : 0,
-  }));
-};
+}

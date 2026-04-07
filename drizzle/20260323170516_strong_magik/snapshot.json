@@ -2,9 +2,7 @@
   "version": "8",
   "dialect": "postgres",
   "id": "c987e79e-074e-4fac-b54d-7633c151b7f6",
-  "prevIds": [
-    "1d824b74-c51b-40f9-887d-03a9c6f3479a"
-  ],
+  "prevIds": ["1d824b74-c51b-40f9-887d-03a9c6f3479a"],
   "ddl": [
     {
       "values": [
@@ -22,11 +20,7 @@
       "schema": "public"
     },
     {
-      "values": [
-        "Remote",
-        "Onsite",
-        "Hybrid"
-      ],
+      "values": ["Remote", "Onsite", "Hybrid"],
       "name": "work_style",
       "entityType": "enums",
       "schema": "public"
@@ -142,9 +136,7 @@
       "table": "application"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "application_pkey",
       "schema": "public",

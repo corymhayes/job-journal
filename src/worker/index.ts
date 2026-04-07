@@ -1,21 +1,13 @@
-import { Hono, type Next, type Context } from "hono";
-// import { validator } from "hono/validator";
-// import * as z from "zod";
-// import { type Application, applicationSchema } from "../applicationSchema";
-import { type Application } from "../applicationSchema";
-import { getAllApplications } from "./db/queries/select";
-// import { insertApplication } from "./db/queries/insert";
-// import { deleteApplication } from "./db/queries/delete";
-// import { updateApplication } from "./db/queries/update";
-// import {
-//   findApplicationsInMonth,
-//   findInProgress,
-//   findResponseRate,
-//   getCurrentMonth,
-//   getPreviousMonth,
-//   pipelineValues,
-// } from "./utils/stats";
+import { type Context, Hono, type Next } from "hono";
+import { validator } from "hono/validator";
 import * as jose from "jose";
+import * as z from "zod";
+import { type Application, applicationSchema } from "../applicationSchema";
+import { deleteApplication } from "./db/queries/delete";
+import { insertApplication } from "./db/queries/insert";
+import { getAllApplications } from "./db/queries/select";
+import { updateApplication } from "./db/queries/update";
+import { calculateAllStats } from "./utils/stats";
 
 type AppVariables = { userId: string };
 
@@ -25,13 +17,17 @@ type Env = {
 
 const app = new Hono<{ Bindings: Env }>();
 
+if (!import.meta.env.VITE_NEON_AUTH_URL) {
+  console.error("URL not set")
+}
+
 const JWKS = jose.createRemoteJWKSet(
-  new URL(`${import.meta.env.VITE_NEON_AUTH_URL}/.well-known/jwks.json`),
+  new URL(`${import.meta.env.VITE_NEON_AUTH_URL}/.well-known/jwks.json`)
 );
 
 const authMiddleware = async (
   c: Context<{ Variables: AppVariables }>,
-  next: Next,
+  next: Next
 ) => {
   const authHeader = c.req.header("Authorization");
 
@@ -50,106 +46,112 @@ const authMiddleware = async (
 
     c.set("userId", payload.sub);
     await next();
-  } catch (err) {
-    console.error("Verification failed: ", err);
+  } catch {
     return c.json({ error: "Invalid Token" }, 401);
   }
 };
 
 app.get("/api", authMiddleware, async (c: Context) => {
   const user_id = c.get("userId");
-  const results = await getAllApplications(
-    c,
-    user_id,
-  );
+  const results = await getAllApplications(c, user_id);
 
   const data: Application[] = results.map((app) => ({
     ...app,
-    user_id: app.user_id ?? undefined
-  }))
+    user_id: app.user_id ?? undefined,
+  }));
 
-  return c.json(data);
+  return c.json({ data }, 200);
 });
 
-// app.post(
-//   "/api",
-//   validator("json", (value, c) => {
-//     const result = applicationSchema.safeParse(value);
-//     if (!result.success) {
-//       return c.json({ error: result.error }, 400);
-//     }
-//     return result.data;
-//   }),
-//   authMiddleware,
-//   async (c) => {
-//     const user_id = c.get("userId");
-//     const data = c.req.valid("json");
-//     const res = { ...data, user_id };
-//     await insertApplication(c.env.HYPERDRIVE.connectionString, res);
-//     return c.json("", { status: 200 });
-//   },
-// );
 
-// app.put(
-//   "/api/:id",
-//   validator("param", (value, c) => {
-//     const schema = z.object({ id: z.uuid() });
-//     const result = schema.safeParse(value);
+app.post(
+  "/api",
+  validator("json", (value, c) => {
+    const result = applicationSchema.safeParse(value);
+    if (!result.success) {
+      return c.json({ error: result.error }, 400);
+    }
+    return result.data;
+  }),
+  authMiddleware,
+  async (c) => {
+    const user_id = c.get("userId");
+    const data = c.req.valid("json");
+    const res = { ...data, user_id };
+    await insertApplication(c, res);
+    return c.json({ success: true }, 200);
+  }
+);
 
-//     if (!result.success) {
-//       return c.json({ error: result.error }, 400);
-//     }
 
-//     return result.data;
-//   }),
-//   validator("json", (value, c) => {
-//     const result = applicationSchema.safeParse(value);
-//     if (!result.success) {
-//       return c.json({ error: result.error }, 400);
-//     }
+app.put(
+  "/api/:id",
+  validator("param", (value, c) => {
+    const schema = z.object({ id: z.uuid() });
+    const result = schema.safeParse(value);
 
-//     return result.data;
-//   }),
-//   authMiddleware,
-//   async (c) => {
-//     const id = c.req.valid("param");
-//     const data = c.req.valid("json");
-//     const user_id = c.get("userId");
-//     const res = { ...data, user_id };
+    if (!result.success) {
+      return c.json({ error: result.error }, 400);
+    }
 
-//     await updateApplication(c.env.HYPERDRIVE.connectionString, id.id, res);
+    return result.data;
+  }),
+  validator("json", (value, c) => {
+    const result = applicationSchema.safeParse(value);
+    if (!result.success) {
+      return c.json({ error: result.error }, 400);
+    }
 
-//     return c.json("", { status: 200 });
-//   },
-// );
+    return result.data;
+  }),
+  authMiddleware,
+  async (c) => {
+    const id = c.req.valid("param");
+    const data = c.req.valid("json");
+    const user_id = c.get("userId");
+    const res = { ...data, user_id };
 
-// app.delete("/api/:id", authMiddleware, async (c) => {
-//   const id = c.req.param("id");
-//   await deleteApplication(c.env.HYPERDRIVE.connectionString, id);
+    await updateApplication(c, id.id, res, user_id);
 
-//   return c.json("", { status: 200 });
-// });
+    return c.json({ success: true }, 200);
+  }
+);
 
-// app.get("/api/stats", authMiddleware, async (c) => {
-//   const user_id = c.get("userId");
-//   const results = await getAllApplications(
-//     c.env.HYPERDRIVE.connectionString,
-//     user_id,
-//   );
 
-//   const data: Application[] = results.map((app) => ({
-//     ...app,
-//     user_id: app.user_id ?? undefined
-//   }))
+app.delete(
+  "/api/:id",
+  validator("param", (value, c) => {
+    const schema = z.object({ id: z.uuid() });
+    const result = schema.safeParse(value);
 
-//   const currentMonth = getCurrentMonth(data);
-//   const previousMonth = getPreviousMonth(data);
-//   return c.json({
-//     applications_in_month: findApplicationsInMonth(currentMonth, previousMonth),
-//     in_progress: findInProgress(currentMonth, previousMonth),
-//     response_rate: findResponseRate(currentMonth, previousMonth),
-//     pipeline: pipelineValues(data),
-//   });
-// });
+    if (!result.success) {
+      return c.json({ error: result.error }, 400);
+    }
 
+    return result.data;
+  }),
+  authMiddleware,
+  async (c) => {
+    const userId = c.get("userId");
+    const id = c.req.param("id");
+    await deleteApplication(c, id, userId);
+
+    return c.json({ success: true }, 200);
+  }
+);
+
+
+app.get("/api/stats", authMiddleware, async (c) => {
+  const user_id = c.get("userId");
+  const results = await getAllApplications(c, user_id);
+
+  const data: Application[] = results.map((app) => ({
+    ...app,
+    user_id: app.user_id ?? undefined,
+  }));
+
+  const stats = calculateAllStats(data);
+
+  return c.json({ stats }, 200);
+});
 export default app;

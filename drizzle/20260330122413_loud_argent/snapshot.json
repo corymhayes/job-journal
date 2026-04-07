@@ -2,9 +2,7 @@
   "version": "8",
   "dialect": "postgres",
   "id": "f98736c2-d8b8-4580-bb4f-89dadb01dd04",
-  "prevIds": [
-    "c987e79e-074e-4fac-b54d-7633c151b7f6"
-  ],
+  "prevIds": ["c987e79e-074e-4fac-b54d-7633c151b7f6"],
   "ddl": [
     {
       "name": "neon_auth",
@@ -26,11 +24,7 @@
       "schema": "public"
     },
     {
-      "values": [
-        "Remote",
-        "Onsite",
-        "Hybrid"
-      ],
+      "values": ["Remote", "Onsite", "Hybrid"],
       "name": "work_style",
       "entityType": "enums",
       "schema": "public"
@@ -1357,14 +1351,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "neon_auth",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "account_userId_user_id_fkey",
@@ -1374,14 +1364,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "organizationId"
-      ],
+      "columns": ["organizationId"],
       "schemaTo": "neon_auth",
       "tableTo": "organization",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "invitation_organizationId_organization_id_fkey",
@@ -1391,14 +1377,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "inviterId"
-      ],
+      "columns": ["inviterId"],
       "schemaTo": "neon_auth",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "invitation_inviterId_user_id_fkey",
@@ -1408,14 +1390,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "organizationId"
-      ],
+      "columns": ["organizationId"],
       "schemaTo": "neon_auth",
       "tableTo": "organization",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "member_organizationId_organization_id_fkey",
@@ -1425,14 +1403,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "neon_auth",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "member_userId_user_id_fkey",
@@ -1442,14 +1416,10 @@
     },
     {
       "nameExplicit": false,
-      "columns": [
-        "userId"
-      ],
+      "columns": ["userId"],
       "schemaTo": "neon_auth",
       "tableTo": "user",
-      "columnsTo": [
-        "id"
-      ],
+      "columnsTo": ["id"],
       "onUpdate": "NO ACTION",
       "onDelete": "CASCADE",
       "name": "session_userId_user_id_fkey",
@@ -1458,9 +1428,7 @@
       "table": "session"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "account_pkey",
       "schema": "neon_auth",
@@ -1468,9 +1436,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "application_pkey",
       "schema": "public",
@@ -1478,9 +1444,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "invitation_pkey",
       "schema": "neon_auth",
@@ -1488,9 +1452,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "jwks_pkey",
       "schema": "neon_auth",
@@ -1498,9 +1460,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "member_pkey",
       "schema": "neon_auth",
@@ -1508,9 +1468,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "organization_pkey",
       "schema": "neon_auth",
@@ -1518,9 +1476,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "project_config_pkey",
       "schema": "neon_auth",
@@ -1528,9 +1484,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "session_pkey",
       "schema": "neon_auth",
@@ -1538,9 +1492,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "user_pkey",
       "schema": "neon_auth",
@@ -1548,9 +1500,7 @@
       "entityType": "pks"
     },
     {
-      "columns": [
-        "id"
-      ],
+      "columns": ["id"],
       "nameExplicit": false,
       "name": "verification_pkey",
       "schema": "neon_auth",
@@ -1559,9 +1509,7 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "slug"
-      ],
+      "columns": ["slug"],
       "nullsNotDistinct": false,
       "name": "organization_slug_key",
       "entityType": "uniques",
@@ -1570,9 +1518,7 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "endpoint_id"
-      ],
+      "columns": ["endpoint_id"],
       "nullsNotDistinct": false,
       "name": "project_config_endpoint_id_key",
       "entityType": "uniques",
@@ -1581,9 +1527,7 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "token"
-      ],
+      "columns": ["token"],
       "nullsNotDistinct": false,
       "name": "session_token_key",
       "entityType": "uniques",
@@ -1592,9 +1536,7 @@
     },
     {
       "nameExplicit": true,
-      "columns": [
-        "email"
-      ],
+      "columns": ["email"],
       "nullsNotDistinct": false,
       "name": "user_email_key",
       "entityType": "uniques",
