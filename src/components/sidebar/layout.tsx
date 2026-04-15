@@ -23,7 +23,7 @@ export function SidebarLayout({
   return (
     <Sidebar side="left" className="flex justify-center" variant="sidebar">
       <div className="w-full flex justify-center mt-5">
-        <Logo />
+        <img src="logo-alt.png" className="w-32" alt="job journal logo" />
       </div>
       <SidebarContent className="p-6">
         <ApplicationForm

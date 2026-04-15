@@ -6,7 +6,6 @@ import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { authClient } from "@/worker/auth";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { ReadCvLogoIcon } from "@phosphor-icons/react";
 
 export const Route = createFileRoute("/")({
   component: Home,
@@ -25,11 +24,11 @@ function Home() {
   const [selectedTab, setSelectedTab] = useState("signin");
 
   return (
-    // <div className="w-screen h-screen flex flex-col items-center justify-center bg-background">
     <div className="grid grid-rows-3 grid-cols-1 w-screen h-screen items-center">
       <div className="flex items-center gap-2 justify-center">
-        <ReadCvLogoIcon weight="fill" size={32} />
-        <p className="font-bold tracking-tight text-3xl">JobJournal</p>
+        {/*<ReadCvLogoIcon weight="fill" size={32} />
+        <p className="font-bold tracking-tight text-3xl">Job Journal</p>*/}
+        <img src="logo-alt.png" className="w-48" alt="job journal logo" />
       </div>
       <Tabs value={selectedTab}>
         <TabsContent value="signin">
