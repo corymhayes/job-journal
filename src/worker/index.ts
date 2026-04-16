@@ -9,25 +9,34 @@ import { getAllApplications } from "./db/queries/select";
 import { updateApplication } from "./db/queries/update";
 import { calculateAllStats } from "./utils/stats";
 
-type AppVariables = { userId: string };
+// type AppVariables = { userId: string };
 
-const app = new Hono();
-
-const neonAuthUrl = process.env.VITE_NEON_AUTH_URL;
-if (!neonAuthUrl) {
-  throw new Error(
-    "VITE_NEON_AUTH_URL is not set. Please configure it in wrangler.jsonc"
-  )
+type Env = {
+  Bindings: {
+    NEON_AUTH: string;
+  };
+  Variables: {
+    userId: string;
+  }
 }
 
-const JWKS = jose.createRemoteJWKSet(
-  new URL(`${neonAuthUrl}/.well-known/jwks.json`)
-);
+const app = new Hono<Env>();
 
 const authMiddleware = async (
-  c: Context<{ Variables: AppVariables }>,
-  next: Next
+  c: Context<Env>,
+  next: Next,
 ) => {
+  const neonAuthUrl = c.env.NEON_AUTH;
+  if (!neonAuthUrl) {
+    throw new Error(
+      "NEON_AUTH is not set. Please configure it in wrangler.jsonc"
+    )
+  }
+
+  const JWKS = jose.createRemoteJWKSet(
+    new URL(`${neonAuthUrl}/.well-known/jwks.json`)
+  );
+
   const authHeader = c.req.header("Authorization");
 
   if (!authHeader?.startsWith("Bearer ")) {
@@ -37,7 +46,7 @@ const authMiddleware = async (
 
   try {
     const { payload } = await jose.jwtVerify(token, JWKS, {
-      issuer: new URL(import.meta.env.VITE_NEON_AUTH_URL).origin,
+      issuer: new URL(c.env.NEON_AUTH).origin,
     });
     if (!payload.sub) {
       return c.json({ error: "Invalid Token" }, 401);

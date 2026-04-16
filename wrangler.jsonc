@@ -25,6 +25,13 @@
       "id": "5b3894005d3e44b78b66bfbf10f567c8",
     },
   ],
+  "secrets_store_secrets": [
+    {
+      "binding": "NEON_AUTH",
+      "store_id": "7f34c44a845b4671a6e140243cf91eeb",
+      "secret_name": "NEON_AUTH",
+    },
+  ],
   "env": {
     "production": {
       "vars": {
