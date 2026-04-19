@@ -32,20 +32,25 @@ function Signup({ children }: SignupProps) {
     e.stopPropagation();
     setLoading(true);
 
-    const name = `${firstName} ${lastName}`;
+    try {
+      const name = `${firstName} ${lastName}`;
 
-    const { data } = await authClient.signUp.email({
-      email,
-      password,
-      name,
-    });
+      const { data } = await authClient.signUp.email({
+        email,
+        password,
+        name,
+      });
 
-    if (data?.user) {
-      setOpenOneTime(true);
+      if (data?.user) {
+        setOpenOneTime(true);
+      }
+    } catch {
+      toast.error("Unable to sign up", { description: "User already exists" });
+      setLoading(false);
     }
   };
 
-  const handleGitHubSignIn = async (e: FormEvent) => {
+  const handleGitHubSignUp = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
@@ -69,7 +74,7 @@ function Signup({ children }: SignupProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={(e) => handleGitHubSignIn(e)}>
+          <form onSubmit={(e) => handleGitHubSignUp(e)}>
             <FieldGroup className="mb-6">
               <Field>
                 <Button variant="outline" type="submit">

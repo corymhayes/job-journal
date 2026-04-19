@@ -26,8 +26,6 @@ function Home() {
   return (
     <div className="grid grid-rows-3 grid-cols-1 w-screen h-screen items-center">
       <div className="flex items-center gap-2 justify-center">
-        {/*<ReadCvLogoIcon weight="fill" size={32} />
-        <p className="font-bold tracking-tight text-3xl">Job Journal</p>*/}
         <img src="logo-alt.png" className="w-48" alt="job journal logo" />
       </div>
       <Tabs value={selectedTab}>

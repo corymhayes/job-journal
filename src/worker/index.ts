@@ -8,12 +8,19 @@ import { insertApplication } from "./db/queries/insert";
 import { getAllApplications } from "./db/queries/select";
 import { updateApplication } from "./db/queries/update";
 import { calculateAllStats } from "./utils/stats";
+// import { cors } from "hono/cors";
 
 // type AppVariables = { userId: string };
+declare global {
+  interface SecretsStoreSecret {
+    get(): Promise<string>;
+  }
+}
 
 type Env = {
   Bindings: {
-    NEON_AUTH: string;
+    NEON_AUTH: SecretsStoreSecret;
+    VITE_NEON_AUTH_URL: string;
   };
   Variables: {
     userId: string;
@@ -26,7 +33,14 @@ const authMiddleware = async (
   c: Context<Env>,
   next: Next,
 ) => {
-  const neonAuthUrl = c.env.NEON_AUTH;
+  let neonAuthUrl: string | SecretsStoreSecret;
+
+  if (import.meta.env.PROD) {
+    neonAuthUrl = await c.env.NEON_AUTH.get();
+  } else {
+    neonAuthUrl = c.env.VITE_NEON_AUTH_URL
+  }
+
   if (!neonAuthUrl) {
     throw new Error(
       "NEON_AUTH is not set. Please configure it in wrangler.jsonc"
@@ -46,7 +60,7 @@ const authMiddleware = async (
 
   try {
     const { payload } = await jose.jwtVerify(token, JWKS, {
-      issuer: new URL(c.env.NEON_AUTH).origin,
+      issuer: new URL(neonAuthUrl).origin,
     });
     if (!payload.sub) {
       return c.json({ error: "Invalid Token" }, 401);

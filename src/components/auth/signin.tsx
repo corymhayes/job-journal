@@ -45,7 +45,8 @@ function Signin({ children }: SigninProps) {
         });
       }
     } catch {
-      toast.error("Unable to sign in");
+      toast.error("Unable to sign in", { description: "Login not found" });
+      setLoading(false);
     }
   };
 

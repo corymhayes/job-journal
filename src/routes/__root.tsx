@@ -26,7 +26,7 @@ function RootComponent() {
   return (
     <NeonAuthUIProvider
       authClient={authClient}
-      social={{ providers: ["github"] }}
+      social={{ providers: ["github", "google"] }}
     >
       <Outlet />
     </NeonAuthUIProvider>
