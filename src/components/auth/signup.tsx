@@ -1,4 +1,4 @@
-import { GithubLogoIcon } from "@phosphor-icons/react";
+import { GithubLogoIcon, GoogleLogoIcon } from "@phosphor-icons/react";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { authClient } from "@/worker/auth";
 import { Button } from "@/components/ui/button";
@@ -63,6 +63,19 @@ function Signup({ children }: SignupProps) {
     }
   };
 
+  const handleGoogleSignUp = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/app",
+      });
+    } catch {
+      toast.error("Unable to sign up with Google");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full items-center justify-center">
       <SiteMark />
@@ -74,16 +87,28 @@ function Signup({ children }: SignupProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={(e) => handleGitHubSignUp(e)}>
-            <FieldGroup className="mb-6">
-              <Field>
-                <Button variant="outline" type="submit">
-                  <GithubLogoIcon weight="fill" />
-                  Sign up with Github
-                </Button>
-              </Field>
-            </FieldGroup>
-          </form>
+          <div className="flex flex-col gap-3 mb-6">
+            <form onSubmit={(e) => handleGoogleSignUp(e)}>
+              <FieldGroup>
+                <Field>
+                  <Button variant="outline" type="submit">
+                    <GoogleLogoIcon weight="bold" />
+                    Sign up with Google
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+            <form onSubmit={(e) => handleGitHubSignUp(e)}>
+              <FieldGroup>
+                <Field>
+                  <Button variant="outline" type="submit">
+                    <GithubLogoIcon weight="fill" />
+                    Sign up with Github
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          </div>
           <form onSubmit={(e) => handleSignup(e)}>
             <FieldGroup>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-background pt-0.5">

@@ -5,7 +5,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { authClient } from "../../worker/auth";
+import { authClient } from "@/worker/auth";
 import { ModeToggle } from "../theme-toggle";
 import { useNavigate } from "@tanstack/react-router";
 import type { User } from "../../types/User";
@@ -18,6 +18,7 @@ export function UserInfo({ userData }: { userData: User }) {
 
   const handleSignout = async (e: FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
 
     try {
       const { error } = await authClient.signOut();

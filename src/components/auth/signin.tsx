@@ -1,4 +1,4 @@
-import { GithubLogoIcon } from "@phosphor-icons/react";
+import { GithubLogoIcon, GoogleLogoIcon } from "@phosphor-icons/react";
 import { useNavigate } from "@tanstack/react-router";
 import { type FormEvent, type ReactNode, useState } from "react";
 import { authClient } from "@/worker/auth";
@@ -9,13 +9,18 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../ui/card";
-import { Field, FieldGroup, FieldLabel, FieldSeparator } from "../ui/field";
-import { Spinner } from "../ui/spinner";
-import { Input } from "../ui/input";
+} from "@/components/ui/card";
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldSeparator,
+} from "@/components/ui/field";
+import { Spinner } from "@/components/ui/spinner";
+import { Input } from "@/components/ui/input";
 import ForgotPassword from "./forgot-password";
 import { toast } from "sonner";
-import { SiteMark } from "../branding/site-mark";
+import { SiteMark } from "@/components/branding/site-mark";
 
 interface SigninProps {
   children?: ReactNode;
@@ -63,6 +68,19 @@ function Signin({ children }: SigninProps) {
     }
   };
 
+  const handleGoogleSignIn = async (e: FormEvent) => {
+    e.preventDefault();
+
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "/app",
+      });
+    } catch {
+      toast.error("Unable to sign in with Google");
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6 w-full items-center justify-center">
       <SiteMark />
@@ -74,16 +92,28 @@ function Signin({ children }: SigninProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={(e) => handleGitHubSignIn(e)}>
-            <FieldGroup className="mb-6">
-              <Field>
-                <Button variant="outline" type="submit">
-                  <GithubLogoIcon weight="fill" />
-                  Sign in with Github
-                </Button>
-              </Field>
-            </FieldGroup>
-          </form>
+          <div className="flex flex-col gap-3 mb-6">
+            <form onSubmit={(e) => handleGoogleSignIn(e)}>
+              <FieldGroup>
+                <Field>
+                  <Button variant="outline" type="submit">
+                    <GoogleLogoIcon weight="bold" />
+                    Sign in with Google
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+            <form onSubmit={(e) => handleGitHubSignIn(e)}>
+              <FieldGroup>
+                <Field>
+                  <Button variant="outline" type="submit">
+                    <GithubLogoIcon weight="fill" />
+                    Sign in with Github
+                  </Button>
+                </Field>
+              </FieldGroup>
+            </form>
+          </div>
           <form onSubmit={(e) => handleSignin(e)}>
             <FieldGroup>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-background pt-0.5">
