@@ -8,7 +8,7 @@
 
 Track, organize, and manage your job applications through every stage of the hiring pipeline—all in one searchable, filterable dashboard.
 
-**[🚀 Live Demo](https:///)** • **[Features](#features)** • **[Tech Stack](#tech-stack)** • **[Getting Started](#quick-start)** • **[API Docs](#api-reference)**
+**[🚀 Live Demo](https://jobjournal.corymhayes-017.workers.dev/)** • **[Features](#features)** • **[Tech Stack](#tech-stack)** • **[Getting Started](#quick-start)** • **[API Docs](#api-reference)**
 
 
 ---
