@@ -7,6 +7,7 @@ import {
 import { NeonAuthUIProvider } from "@neondatabase/neon-js/auth/react";
 import type { QueryClient } from "@tanstack/react-query";
 import { authClient } from "../worker/auth";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -28,7 +29,9 @@ function RootComponent() {
       authClient={authClient}
       social={{ providers: ["github", "google"] }}
     >
-      <Outlet />
+      <TooltipProvider delayDuration={800}>
+        <Outlet />
+      </TooltipProvider>
     </NeonAuthUIProvider>
   );
 }
