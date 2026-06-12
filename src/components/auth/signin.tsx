@@ -55,6 +55,27 @@ function Signin({ children }: SigninProps) {
     }
   };
 
+  const handleDemoSignin = async (e: FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    try {
+      const { data } = await authClient.signIn.email({
+        email: import.meta.env.VITE_DEMO_USER,
+        password: import.meta.env.VITE_DEMO_PASS,
+      });
+
+      if (data?.user) {
+        setLoading(false);
+        navigate({
+          to: "/app",
+        });
+      }
+    } catch {
+      toast.error("Unable to sign in", { description: "Login not found" });
+    }
+  };
+
   const handleGitHubSignIn = async (e: FormEvent) => {
     e.preventDefault();
 
@@ -88,11 +109,19 @@ function Signin({ children }: SigninProps) {
         <CardHeader className="text-center">
           <CardTitle className="text-xl">Welcome</CardTitle>
           <CardDescription>
-            Sign in with your Google or Github account
+            {/*Sign in with your Google or Github account*/}
+            Try the demo or sign in with your account
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-3 mb-6">
+            <Button
+              variant="default"
+              type="submit"
+              onClick={(e) => handleDemoSignin(e)}
+            >
+              Try a live demo - no signup required
+            </Button>
             <form onSubmit={(e) => handleGoogleSignIn(e)}>
               <FieldGroup>
                 <Field>
@@ -141,8 +170,10 @@ function Signin({ children }: SigninProps) {
                   <ForgotPassword />
                 </div>
               </Field>
-              <Field className="flex flex-col gap-4">
-                <Button type="submit">{loading ? <Spinner /> : "Login"}</Button>
+              <Field className="flex flex-col gap-0">
+                <Button className="mb-4" type="submit">
+                  {loading ? <Spinner /> : "Login"}
+                </Button>
                 {children}
               </Field>
             </FieldGroup>

@@ -24,10 +24,8 @@ function Home() {
   const [selectedTab, setSelectedTab] = useState("signin");
 
   return (
-    <div className="grid grid-rows-3 grid-cols-1 w-screen h-screen items-center">
-      <div className="flex items-center gap-2 justify-center">
-        <img src="logo-alt.png" className="w-48" alt="job journal logo" />
-      </div>
+    <div className="w-screen h-screen flex flex-col gap-6 items-center justify-center">
+      <img src="logo-alt.png" className="w-48" alt="job journal logo" />
       <Tabs value={selectedTab}>
         <TabsContent value="signin">
           <Signin>
