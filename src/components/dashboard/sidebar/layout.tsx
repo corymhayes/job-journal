@@ -1,20 +1,15 @@
 import {
-  useSidebar,
   Sidebar,
   SidebarContent,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { UserInfo } from "./user-info";
 import type { Application } from "@/applicationSchema";
 import type { User } from "@/types/User";
-import { SidebarSimpleIcon } from "@phosphor-icons/react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { lazy, Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { XIcon } from "@phosphor-icons/react";
 
 const ApplicationForm = lazy(() =>
   import("./application-form").then((m) => ({ default: m.ApplicationForm }))
@@ -24,6 +19,7 @@ interface SidebarLayoutProps {
   selectedApplication?: Application;
   onClearSelection?: () => void;
   userData?: User;
+  sidebarState: boolean;
 }
 
 export function SidebarLayout({
@@ -32,10 +28,17 @@ export function SidebarLayout({
   userData,
 }: SidebarLayoutProps) {
   const { toggleSidebar } = useSidebar();
-
   return (
     <>
       <Sidebar side="left" className="flex justify-center" variant="sidebar">
+        <div className="absolute right-5 top-5">
+          <XIcon
+            weight="bold"
+            size={16}
+            className="sm:hidden"
+            onClick={toggleSidebar}
+          />
+        </div>
         <div className="w-full flex justify-evenly mt-5">
           <img src="logo-alt.png" className="w-32" alt="job journal logo" />
         </div>
@@ -52,21 +55,6 @@ export function SidebarLayout({
           {userData && <UserInfo userData={userData} />}
         </SidebarFooter>
       </Sidebar>
-      <Tooltip>
-        <TooltipTrigger
-          className="ml-3 -mr-7 self-end my-5 z-50"
-          onClick={toggleSidebar}
-        >
-          <SidebarSimpleIcon weight="fill" size={20} />
-          <TooltipContent
-            side="right"
-            className="bg-black border-secondary text-secondary-foreground"
-            id="tooltip-jj"
-          >
-            <p>Toggle sidebar</p>
-          </TooltipContent>
-        </TooltipTrigger>
-      </Tooltip>
     </>
   );
 }
