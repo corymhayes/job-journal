@@ -38,10 +38,10 @@ export function SidebarLayout({
             onClick={toggleSidebar}
           />
         </div>
-        <div className="w-full flex justify-evenly mt-5">
+        <div className="w-full flex justify-evenly py-6">
           <img src="logo-alt.png" className="w-32" alt="job journal logo" />
         </div>
-        <SidebarContent className="p-6">
+        <SidebarContent className="px-6 pb-6">
           <Suspense fallback={<Skeleton className="h-96 w-full rounded-md" />}>
             <ApplicationForm
               key={selectedApplication?.id ?? "new"}
