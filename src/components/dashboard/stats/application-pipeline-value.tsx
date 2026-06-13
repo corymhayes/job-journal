@@ -10,7 +10,7 @@ export function ApplicationPipelineValue({
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="font-normal">{title}</CardTitle>
+        <CardTitle className="font-normal w-10">{title}</CardTitle>
       </CardHeader>
       <CardContent className="text-lg font-semibold">{value}</CardContent>
     </Card>

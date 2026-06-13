@@ -48,7 +48,7 @@ export function ApplicationPipeline({ status }: { status: Pipeline[] }) {
             width={status[7].percentage}
           />
         </div>
-        <div className="flex gap-5 w-full">
+        <div className="grid grid-cols-2 sm:flex gap-3">
           {status.map((stat, i) => (
             <ApplicationPipelineValue
               title={stat.name}

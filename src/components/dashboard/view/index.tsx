@@ -51,7 +51,7 @@ export default function DashboardView({
 
   return (
     <div className="flex flex-col w-full gap-3 mt-4 px-3 self-start">
-      <div className="flex justify-evenly gap-3">
+      <div className="sm:flex sm:justify-evenly grid grid-cols-2 gap-3">
         <StatBoxes
           title="Total this month"
           stat={stats.applications_in_month.numberOfApps}
