@@ -19,7 +19,6 @@ interface SidebarLayoutProps {
   selectedApplication?: Application;
   onClearSelection?: () => void;
   userData?: User;
-  sidebarState: boolean;
 }
 
 export function SidebarLayout({
